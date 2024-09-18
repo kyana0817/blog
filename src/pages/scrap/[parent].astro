@@ -1,0 +1,107 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  return (await getCollection('scrap')).reduce((acc,cur) => {
+    const [parent, _] = cur.id.split('/');
+    const idx = acc.findIndex((item) => item.name === parent);
+    if (idx === -1) {
+      acc.push({ name: parent, scraps: [cur]});
+    } else {
+      acc[idx].scraps.push(cur);
+    }
+    return acc;
+  }, [] as {name: string, scraps: CollectionEntry<'scrap'>[]}[]).map(entry => ({
+    params: { parent: entry.name },
+    props: {scraps: entry.scraps},    
+  }));
+}
+const title = Astro.params.parent;
+const {scraps} = Astro.props;
+---
+
+<html lang="ja">
+	<head>
+		<BaseHead title={title} description={`${title}-scraps`} />
+	</head>
+
+	<body>
+		<Header />
+		<main>
+      <h2>{title}</h2>
+      <div class="c-scraps">
+        {scraps.map(async scrap => {
+          const {Content} = await scrap.render();
+          return (
+          <article class="c-scraps__article" data-loaded="false">
+            <div class="c-scraps__article-inner">
+              <Content />
+            </div>
+          </article>
+        )})}
+      </div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+  .c-scraps {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+    grid-auto-rows: 0;
+    gap: 1rem;
+  }
+  .c-scraps__article {
+    border: 1px solid var(--border-primary);
+  }
+  .c-scraps__article[data-loaded="false"] {
+    opacity: 0;
+  }
+  .c-scraps__article-inner {
+    padding: 1rem;
+  }
+</style>
+
+<script>
+  const layout = document.querySelector('.c-scraps')!;
+  if (!layout) {
+    throw new Error('not found mansory layout');
+  }
+  function throttle(fn: Function, delay: number) {
+    let timer: number | null = null;
+    return function() {
+      if (timer) {
+        return;
+      }
+      timer = setTimeout(() => {
+        fn();
+        timer = null;
+      }, delay) as unknown as number;
+    }
+  }
+  function resize(item: Element) {
+    const gap = parseInt(window.getComputedStyle(layout).getPropertyValue('grid-row-gap'))
+    const height = parseInt(window.getComputedStyle(layout).getPropertyValue('grid-auto-rows'));
+    const span = Math.ceil((item.querySelector('.c-scraps__article-inner')!.getBoundingClientRect().height + gap) / (height + gap));
+    (item as any).style.gridRowEnd  = `span ${span}`;
+    (item as any).dataset.loaded = 'true';
+  }
+
+  function resizeAll() {
+    const items = document.querySelectorAll('.c-scraps__article');
+    items.forEach(item => resize(item));
+  }
+  resizeAll();
+  const throttledResizeAll = throttle(resizeAll, 100);
+
+  const resizeObserver = new ResizeObserver(_ => {
+    throttledResizeAll()
+  });
+
+  resizeObserver.observe(layout);
+  
+</script>
