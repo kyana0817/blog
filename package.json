@@ -15,6 +15,9 @@
     "@astrojs/rss": "^4.0.7",
     "@astrojs/sitemap": "^3.1.6",
     "astro": "^4.15.6",
+    "astro-expressive-code": "^0.36.1",
+    "playwright": "^1.47.1",
+    "remark-mermaidjs": "^6.0.0",
     "typescript": "^5.6.2"
   }
 }
