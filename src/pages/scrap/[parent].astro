@@ -1,8 +1,6 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
+import Base from '../../layouts/Base.astro';
 
 export async function getStaticPaths() {
   return (await getCollection('scrap')).reduce((acc,cur) => {
@@ -23,30 +21,23 @@ const title = Astro.params.parent;
 const {scraps} = Astro.props;
 ---
 
-<html lang="ja">
-	<head>
-		<BaseHead title={title} description={`${title}-scraps`} />
-	</head>
-
-	<body>
-		<Header />
-		<main>
-      <h2>{title}</h2>
-      <div class="c-scraps">
-        {scraps.map(async scrap => {
-          const {Content} = await scrap.render();
-          return (
-          <article class="c-scraps__article" data-loaded="false">
-            <div class="c-scraps__article-inner">
-              <Content />
-            </div>
-          </article>
-        )})}
-      </div>
-		</main>
-		<Footer />
-	</body>
-</html>
+<Base
+  title={title}
+  description={`${title}-scraps`}
+>
+  <h2>{title}</h2>
+  <div class="c-scraps">
+    {scraps.map(async scrap => {
+      const {Content} = await scrap.render();
+      return (
+      <article class="c-scraps__article" data-loaded="false">
+        <div class="c-scraps__article-inner">
+          <Content />
+        </div>
+      </article>
+    )})}
+  </div>
+</Base>
 
 <style>
   .c-scraps {
@@ -102,6 +93,5 @@ const {scraps} = Astro.props;
     throttledResizeAll()
   });
 
-  resizeObserver.observe(layout);
-  
+  resizeObserver.observe(layout);  
 </script>

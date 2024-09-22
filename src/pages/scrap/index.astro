@@ -1,8 +1,5 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
 
@@ -19,42 +16,35 @@ const scraps = (await getCollection('scrap')).reduce((acc, cur) => {
 }, [] as { name:string, count: number, lastUpdated: Date }[]).sort((a, b) => b.lastUpdated.valueOf() - a.lastUpdated.valueOf());
 ---
 
-<!doctype html>
-<html lang="ja">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<table>
+<Base
+	title="スクラップ"
+	description="スクラップ一覧"
+>
+	<section>
+		<table>
+			<tr>
+				<th>名前</th>
+				<th>数</th>
+				<th>最終更新日</th>
+			</tr>
+			{
+				scraps.map((scrap) => (
 					<tr>
-						<th>名前</th>
-						<th>数</th>
-						<th>最終更新日</th>
+						<td>
+							<a href={`/scrap/${scrap.name}/`}>{scrap.name}</a>
+						</td>
+						<td>
+							<a href={`/scrap/${scrap.name}/`}>{scrap.count}</a>									
+						</td>
+						<td>
+							<FormattedDate date={scrap.lastUpdated} />
+						</td>
 					</tr>
-					{
-						scraps.map((scrap) => (
-							<tr>
-								<td>
-									<a href={`/scrap/${scrap.name}/`}>{scrap.name}</a>
-								</td>
-								<td>
-									<a href={`/scrap/${scrap.name}/`}>{scrap.count}</a>									
-								</td>
-								<td>
-									<FormattedDate date={scrap.lastUpdated} />
-								</td>
-							</tr>
-						))
-					}
-				</table>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+				))
+			}
+		</table>
+	</section>
+</Base>
 
 <style>
 	table {
@@ -80,5 +70,3 @@ const scraps = (await getCollection('scrap')).reduce((acc, cur) => {
 		text-decoration: none;
 	}
 </style>
-
-<!-- refs: https://git.zx2c4.com/ -->
