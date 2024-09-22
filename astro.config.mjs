@@ -8,8 +8,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://kyana0817.github.io',
-  base: 'blog',
+  site: 'https://blog.kyana.dev',
 	markdown: {
 		remarkPlugins: [remarkMermaid]
 	},
