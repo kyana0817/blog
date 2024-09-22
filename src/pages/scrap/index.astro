@@ -1,19 +1,27 @@
 ---
-import Base from '../../layouts/Base.astro';
-import { getCollection } from 'astro:content';
-import FormattedDate from '../../components/FormattedDate.astro';
+import Base from "../../layouts/Base.astro"
+import { getCollection } from "astro:content"
+import FormattedDate from "../../components/FormattedDate.astro"
 
-const scraps = (await getCollection('scrap')).reduce((acc, cur) => {
-  const [parent, _] = cur.id.split('/');
-  const idx = acc.findIndex((item) => item.name === parent);
-  if (idx === -1) {
-    acc.push({ name: parent, count: 1, lastUpdated: cur.data.pubDate });
-  } else {
-    acc[idx].count += 1;
-    acc[idx].lastUpdated = acc[idx].lastUpdated.valueOf() - cur.data.pubDate.valueOf() > 0 ? acc[idx].lastUpdated : cur.data.pubDate;
-  }  
-  return acc;
-}, [] as { name:string, count: number, lastUpdated: Date }[]).sort((a, b) => b.lastUpdated.valueOf() - a.lastUpdated.valueOf());
+const scraps = (await getCollection("scrap"))
+  .reduce(
+    (acc, cur) => {
+      const [parent, _] = cur.id.split("/")
+      const idx = acc.findIndex((item) => item.name === parent)
+      if (idx === -1) {
+        acc.push({ name: parent, count: 1, lastUpdated: cur.data.pubDate })
+      } else {
+        acc[idx].count += 1
+        acc[idx].lastUpdated =
+          acc[idx].lastUpdated.valueOf() - cur.data.pubDate.valueOf() > 0
+            ? acc[idx].lastUpdated
+            : cur.data.pubDate
+      }
+      return acc
+    },
+    [] as { name: string; count: number; lastUpdated: Date }[],
+  )
+  .sort((a, b) => b.lastUpdated.valueOf() - a.lastUpdated.valueOf())
 ---
 
 <Base

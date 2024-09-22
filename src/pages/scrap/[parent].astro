@@ -1,24 +1,29 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
-import Base from '../../layouts/Base.astro';
+import { type CollectionEntry, getCollection } from "astro:content"
+import Base from "../../layouts/Base.astro"
 
 export async function getStaticPaths() {
-  return (await getCollection('scrap')).reduce((acc,cur) => {
-    const [parent, _] = cur.id.split('/');
-    const idx = acc.findIndex((item) => item.name === parent);
-    if (idx === -1) {
-      acc.push({ name: parent, scraps: [cur]});
-    } else {
-      acc[idx].scraps.push(cur);
-    }
-    return acc;
-  }, [] as {name: string, scraps: CollectionEntry<'scrap'>[]}[]).map(entry => ({
-    params: { parent: entry.name },
-    props: {scraps: entry.scraps},    
-  }));
+  return (await getCollection("scrap"))
+    .reduce(
+      (acc, cur) => {
+        const [parent, _] = cur.id.split("/")
+        const idx = acc.findIndex((item) => item.name === parent)
+        if (idx === -1) {
+          acc.push({ name: parent, scraps: [cur] })
+        } else {
+          acc[idx].scraps.push(cur)
+        }
+        return acc
+      },
+      [] as { name: string; scraps: CollectionEntry<"scrap">[] }[],
+    )
+    .map((entry) => ({
+      params: { parent: entry.name },
+      props: { scraps: entry.scraps },
+    }))
 }
-const title = Astro.params.parent;
-const {scraps} = Astro.props;
+const title = Astro.params.parent
+const { scraps } = Astro.props
 ---
 
 <Base
