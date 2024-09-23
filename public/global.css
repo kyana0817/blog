@@ -4,7 +4,8 @@
   --background-primary: #011627;
   --background-secondary: #122d42;
   --background-hover: #264a8980;
-  --border-primary: #f0f6fc;
+  --border-primary: #01213a;
+  --border-secondary: #262a39;
   --text-hyperlink: #7d99b1;
   --text-hyperlink-hover: #c5cae9;
 }
@@ -39,6 +40,9 @@ canvas,
 svg {
   display: block;
   max-width: 100%;
+  object-fit: contain;
+  height: auto;
+  margin: 0 auto
 }
 
 input,
@@ -73,6 +77,10 @@ h1 {
 
 h2 {
   font-size: 1.875rem;
+}
+
+article h2::before {
+  content: "## ";
 }
 
 h3 {
@@ -116,7 +124,7 @@ main {
 }
 
 hr {
-  border-color: var(--border-primary);
+  border-color: var(--border-secondary);
 }
 
 footer {
@@ -147,7 +155,7 @@ tr:not(:first-child):hover {
   background-color: var(--background-hover);
 }
 
-tr > td:nth-child(3) {
+tr>td:nth-child(3) {
   width: 120px;
 }
 
@@ -156,11 +164,22 @@ table a {
   text-decoration: none;
 }
 
-pre > code {
+pre>code {
   --ec-codeFontSize: 1.4rem;
   --ec-uiFontSize: 1.6rem;
 }
 
 .expressive-code {
   --ec-uiFontSize: 1.44rem;
+}
+
+.prose>* {
+  margin-top: 2rem;
+}
+
+code {
+  font-size: 1.4rem;
+  margin: 0 0.5rem;
+  background: var(--background-secondary);
+  padding: 0.2rem .5rem;
 }
