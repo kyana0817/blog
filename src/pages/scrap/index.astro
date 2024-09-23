@@ -1,12 +1,12 @@
 ---
-import Base from "../../layouts/Base.astro"
-import { getCollection } from "astro:content"
-import FormattedDate from "../../components/FormattedDate.astro"
+import Base from '../../layouts/Base.astro'
+import { getCollection } from 'astro:content'
+import FormattedDate from '../../components/FormattedDate.astro'
 
-const scraps = (await getCollection("scrap"))
+const scraps = (await getCollection('scrap'))
   .reduce(
     (acc, cur) => {
-      const [parent, _] = cur.id.split("/")
+      const [parent, _] = cur.id.split('/')
       const idx = acc.findIndex((item) => item.name === parent)
       if (idx === -1) {
         acc.push({ name: parent, count: 1, lastUpdated: cur.data.pubDate })
@@ -53,28 +53,3 @@ const scraps = (await getCollection("scrap"))
 		</table>
 	</section>
 </Base>
-
-<style>
-	table {
-		border-collapse: collapse;
-		width: 100%;
-	}
-	th {
-		text-align: left;
-		color: #4493f8;
-	}
-	tr:nth-child(even) {
-		background-color: #151b23;
-	}
-	tr:not(:first-child):hover {
-		background-color: #262c36;
-	}
-
-	tr>td:nth-child(3) {
-		width: 120px;
-	}
-	table a {
-		color: var(--text-primary);
-		text-decoration: none;
-	}
-</style>

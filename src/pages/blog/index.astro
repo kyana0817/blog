@@ -1,9 +1,9 @@
 ---
-import Base from "../../layouts/Base.astro"
-import { getCollection } from "astro:content"
-import FormattedDate from "../../components/FormattedDate.astro"
+import Base from '../../layouts/Base.astro'
+import { getCollection } from 'astro:content'
+import FormattedDate from '../../components/FormattedDate.astro'
 
-const posts = (await getCollection("blog")).sort(
+const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 )
 ---
@@ -37,28 +37,3 @@ const posts = (await getCollection("blog")).sort(
 		</table>
 	</section>
 </Base>
-
-<style>
-	table {
-		border-collapse: collapse;
-		width: 100%;
-	}
-	th {
-		text-align: left;
-		color: #4493f8;
-	}
-	tr:nth-child(even) {
-		background-color: #151b23;
-	}
-	tr:not(:first-child):hover {
-		background-color: #262c36;
-	}
-
-	tr>td:nth-child(3) {
-		width: 120px;
-	}
-	table a {
-		color: var(--text-primary);
-		text-decoration: none;
-	}
-</style>
