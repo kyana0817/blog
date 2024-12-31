@@ -7,7 +7,7 @@ import logo from '/public/logo.svg?raw'
 	<nav class="c-app__menu">
 		<h2>
 			<a class="c-app__logo" href="/">
-				<p class="c-app__logo__text">{SITE_TITLE}</p>
+				<span class="c-app__logo__text">{SITE_TITLE}</span>
 				<Fragment set:html={logo}/>
 			</a>
 		</h2>
@@ -62,7 +62,17 @@ import logo from '/public/logo.svg?raw'
 }
 
 .c-app__logo__text {
-	display: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute !important;
+    height: 1px; 
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
 </style>
