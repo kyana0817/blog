@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro'
+import { GETALL } from './api/bookmarklets'
+export const prerender = false
+
+const { isError, bookmarklets } = await GETALL()
+---
+
+<Base
+  title="ブックマークレット"
+  description="kyana0817作のちょっと役立つブックマークレット"
+>
+  <h1>ブックマークレット</h1>
+  <section>
+    {isError ? (
+      <p>ブックマークレットの取得に失敗しました。</p>
+    ) : (
+    <table>
+      <tr>
+        <th>スクリプト</th>
+        <th>説明</th>
+      </tr>
+      {bookmarklets.map((bookmarklet) => (
+        <tr>
+          <td>
+            <a href={bookmarklet.source}>{bookmarklet.name}</a>
+          </td>
+          <td>
+            <span>{bookmarklet.description.split('\n').map((text, idx) => {
+              return <>{idx > 0 && <br />}{text}</>
+            })}</span>
+          </td>
+        </tr>
+      ))}
+    </table>
+    )}
+  </section>
+</Base>
