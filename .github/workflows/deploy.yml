@@ -23,7 +23,7 @@ jobs:
         run: |
           ls -la
           touch .env
-          echo SECRET_BOOKMARKLETS_URL=${{ secrets.SECRET_BOOKMARKLETS_URL }} >> .env 
+          echo SECRET_BOOKMARKLETS_URL=${{ secrets.SECRET_BOOKMARKLETS_URL-github-pages }} >> .env 
           cat .env
       - name: Install, build, and upload your site
         uses: withastro/action@v3
