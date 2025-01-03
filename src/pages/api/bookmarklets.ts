@@ -1,4 +1,4 @@
-const url = import.meta.env.BOOKMARKLETS_URL && process.env.BOOKMARKLETS_URL
+const url = import.meta.env.SECRET_BOOKMARKLETS_URL
 type Bookmarklet = {
   name: string
   source: string

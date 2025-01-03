@@ -1,7 +1,7 @@
 /// <reference path="../.astro/types.d.ts" />
 
 interface ImportMetaEnv {
-  readonly BOOKMARKLETS_URL: string;
+  readonly SECRET_BOOKMARKLETS_URL: string;
 }
 
 interface ImportMeta {
