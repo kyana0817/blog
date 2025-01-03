@@ -5,13 +5,15 @@ type Bookmarklet = {
   description: string
 }
 
-type Props = {
+export type GetBookmarkletResponse = {
   isError: boolean
   bookmarklets: Bookmarklet[]
 }
-export const GETALL = async (): Promise<Props> => {
+
+
+export const GET = async (): Promise<Response> => {
   const response = await fetch(`${url}/output.json`)
-  const props: Props = {
+  const props: GetBookmarkletResponse = {
     isError: false,
     bookmarklets: []
   }
@@ -32,6 +34,5 @@ export const GETALL = async (): Promise<Props> => {
   } catch {
     props.isError = true
   }
-
-  return props
+  return new Response(JSON.stringify(props))
 }

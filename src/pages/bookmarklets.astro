@@ -1,9 +1,12 @@
 ---
 import Base from '../layouts/Base.astro'
-import { GETALL } from './api/bookmarklets'
+import { GET } from './api/bookmarklets'
+import type { GetBookmarkletResponse } from './api/bookmarklets'
 export const prerender = false
 
-const { isError, bookmarklets } = await GETALL()
+const { isError, bookmarklets } = (await (
+  await GET()
+).json()) as GetBookmarkletResponse
 ---
 
 <Base
