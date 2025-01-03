@@ -13,14 +13,16 @@ permissions:
   contents: read
   pages: write
   id-token: write
-env:
-  SECRET_BOOKMARKLETS_URL: ${{ secrets.SECRET_BOOKMARKLETS_URL }}
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4        
+      - name: create env file
+        run: |
+          touch .env
+          echo SECRET_BOOKMARKLETS_URL=${{ secrets.SECRET_BOOKMARKLETS_URL }} >> .env 
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         with:
