@@ -23,7 +23,7 @@ jobs:
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         env:
-          BOOKMARKLETS_URL: ${{ secrets.SECRET_BOOKMARKLETS_URL }}
+          SECRET_BOOKMARKLETS_URL: ${{ secrets.SECRET_BOOKMARKLETS_URL }}
         with:
           node-version: 22
           package-manager: pnpm@9.8
