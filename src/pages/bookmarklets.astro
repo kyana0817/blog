@@ -1,16 +1,11 @@
 ---
 import Base from '../layouts/Base.astro'
-// import { GET } from './api/bookmarklets'
+import { GET } from './api/bookmarklets'
 import type { GetBookmarkletResponse } from './api/bookmarklets'
 
-// const { isError, bookmarklets } = (await (
-//   await GET()
-// ).json()) as GetBookmarkletResponse
-
-const { isError, bookmarklets } = {
-  isError: false,
-  bookmarklets: [],
-} as GetBookmarkletResponse
+const { isError, bookmarklets } = (await (
+  await GET()
+).json()) as GetBookmarkletResponse
 ---
 
 <Base
