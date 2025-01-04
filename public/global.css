@@ -183,3 +183,8 @@ code {
   background: var(--background-secondary);
   padding: 0.2rem .5rem;
 }
+
+button {
+  background-color: inherit;
+  border: none;
+}

@@ -1,6 +1,7 @@
 ---
 import { SITE_TITLE } from '../consts'
 import logo from '/public/logo.svg?raw'
+import burger from '/public/burger-menu.svg?raw'
 ---
 
 <header class="c-app__header">
@@ -14,10 +15,58 @@ import logo from '/public/logo.svg?raw'
 		<div class="c-app__menu-links">
 			<a class="c-app__menu-link" href="/blog">記事</a>
 			<a class="c-app__menu-link" href="/scrap">スクラップ</a>
+			<a class="c-app__menu-link" href="/bookmarklets">ブックマークレット</a>
 			<a class="c-app__menu-link" href="/about">詳しく</a>
+		</div>
+		<div class="c-app__menu-list" data-open="false">
+			<button class="c-app__menu-list-button" id="menu_list_button">
+				<Fragment set:html={burger}/>
+			</button>
+			<div class="c-app__menu-list-flow">
+				<a class="c-app__menu-link" href="/blog">記事</a>
+				<a class="c-app__menu-link" href="/scrap">スクラップ</a>
+				<a class="c-app__menu-link" href="/bookmarklets">ブックマークレット</a>
+				<a class="c-app__menu-link" href="/about">詳しく</a>
+			</div>
 		</div>
 	</nav>
 </header>
+
+<script>
+	(() => {
+		const menuListButton = document.getElementById('menu_list_button');
+		if (!menuListButton) {
+			console.error('DOM Element not found');
+			return;
+		}
+		const menuList = menuListButton?.parentElement;
+		if (!menuList) {
+			console.error('DOM Element not found');
+			return;
+		}
+		const ro = new ResizeObserver(() => {
+			menuList.dataset.open = 'false';
+		});
+
+		const outsideClickListener = (event: MouseEvent) => {			
+			if (!menuList.contains(event.target as Node)) {
+				menuList.dataset.open = 'false';
+				ro.disconnect();
+			}
+		}
+		ro.observe(document.documentElement);
+		
+		menuListButton.addEventListener('click', () => {
+			const isOpen = menuList.dataset.open === 'true' ? 'false' : 'true';
+			if (isOpen === 'true') {
+				document.body.addEventListener('click', outsideClickListener);
+			} else {
+				document.body.removeEventListener('click', outsideClickListener);
+			}
+			menuList.dataset.open = isOpen;
+		});		
+	})()
+</script>
 
 <style>
 .c-app__header {
@@ -39,6 +88,44 @@ import logo from '/public/logo.svg?raw'
 	display: flex;
 	height: 100%;
 	gap: 8px;
+}
+
+.c-app__menu-list {
+	display: none;
+	position: relative;
+}
+
+.c-app__menu-list-button {
+	width: 64px;
+	height: 64px;
+	padding: 12px;
+}
+
+.c-app__menu-list-flow {
+	display: none;
+	background-color: var(--background-secondary);
+	border: 2px solid var(--border-secondary);
+	position: absolute;
+	top: 80%;
+	right: 0;
+	z-index: 1;
+	flex-direction: column;
+	width: 140px;
+}
+
+.c-app__menu-list[data-open="true"]> .c-app__menu-list-flow {
+	display: flex;
+}
+
+@media (max-width: 768px) {
+	.c-app__menu-links {
+		display: none;
+	}
+			
+	.c-app__menu-list {
+		display: block;
+	}
+
 }
 
 .c-app__menu-link {
