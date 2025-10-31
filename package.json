@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "kyana0817-blog",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -22,5 +22,8 @@
     "remark-mermaidjs": "^6.0.0",
     "sharp": "^0.33.5",
     "typescript": "^5.9.3"
+  },
+  "volta": {
+    "node": "24.11.0"
   }
 }
