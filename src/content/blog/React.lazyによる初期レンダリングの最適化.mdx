@@ -1,0 +1,70 @@
+---
+title: React.lazyによる初期レンダリングの最適化
+description: React.lazyを使用してビルドサイズを削減し、初期レンダリングを高速化する方法の備忘録です。
+pubDate: 'Nov 19 2025'
+---
+
+React.lazy を使用することで初回にロードされるコード量を削減し、初期レンダリングを最適化できます。
+
+## Lazy import
+React.lazy は、通常 JavasScript の Dynamic import API と組みわせて使用します。  
+Dynamic import は、例えば実行時の状態に応じて使用するモジュールを切り替えたり、必要になるまでモジュールロードを遅らせる遅延するために使用します。
+
+```js
+import React from 'react';
+
+const LazyComponent = React.lazy(() => import('./LazyComponent'));
+```
+
+上記の例では、デフォルトエクスポートされているコンポーネントを遅延ロードしています。
+
+## Suspense
+React.lazy で遅延ロードされたコンポーネントは非同期になるので、Suspense コンポーネントでラップする必要があります。  
+Suspense は子コンポーネントから throw された Promise が解決されるまで fallback に渡したコンポーネントを代わりにレンダリングします。
+
+```js
+import { Suspense } from 'react';
+
+const App = () => {
+  return (
+    <Suspense fallback={<Loading />}>
+      <LazyComponent />
+    </Suspense>
+  )
+};
+```
+## 注意点
+React.lazy は デフォルトエクスポート以外にも名前付きエクスポートでも使用することはできますが、
+初回ロードされるコードを意図せず増やす可能性があります。  
+例えば、各ページエントリーになるコンポーネントを`page/index.js`で際エクスーポートしている場合、
+```js
+// page/index.js
+export { PageA } from './PageA';
+export { PageB } from './PageB';
+```
+
+PageA と PageB は同じファイルで一度評価されてしまうため、どちらか一方が Lazy import されるともう一方も一緒にロードされてしまいます。
+```js
+// App.js
+import React, { Suspense } from 'react';
+const PageA = React.lazy(() => import('./page').then(module => ({ default: module.PageA })));
+const PageB = React.lazy(() => import('./page').then(module => ({ default: module.PageB })));
+
+const App = () => {
+  const location = window.location.pathname;
+  return (
+    <Suspense fallback={<Loading />}>
+      {location === '/a' ?
+        <PageA />
+        :<PageB />
+      } 
+    </Suspense>
+  )
+};
+```
+Lazy import は ページルーティングと組み合わせて使用されることがありますが、各ページエントリーを同じファイルで再エクスポートして、
+上記と同じような構成にしてしまうとせっかくの Lazy import が無駄になります。
+
+なので Lazy import を使用する場合は、できるだけ各エントリーポイントを個別のファイルに分割するか、
+そもそもデフォルトエクスポートでのみ使用するようにした方が良いです。
+
