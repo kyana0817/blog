@@ -1,50 +1,99 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
 import Base from '../../layouts/Base.astro'
+import FormattedDate from '../../components/FormattedDate.astro'
+import { getScrapEntries, getScrapSections } from '../../utils/scrap'
+import 'highlight.js/styles/github-dark.css'
 
 export async function getStaticPaths() {
-  return (await getCollection('scrap'))
-    .reduce(
-      (acc, cur) => {
-        const [parent, _] = cur.id.split('/')
-        const idx = acc.findIndex((item) => item.name === parent)
-        if (idx === -1) {
-          acc.push({ name: parent, scraps: [cur] })
-        } else {
-          acc[idx].scraps.push(cur)
-        }
-        return acc
-      },
-      [] as { name: string; scraps: CollectionEntry<'scrap'>[] }[],
-    )
-    .map((entry) => ({
-      params: { parent: entry.name },
-      props: { scraps: entry.scraps },
-    }))
+  return (await getScrapEntries()).map((entry) => ({
+    params: { parent: entry.slug },
+    props: { scrap: entry },
+  }))
 }
-const title = Astro.params.parent
-const { scraps } = Astro.props
+
+type Props = {
+  scrap: CollectionEntry<'scrap'>
+}
+
+const { scrap } = Astro.props as Props
+const title = scrap.data.title
+const sections = await getScrapSections(scrap)
 ---
 
 <Base
   title={title}
-  description={`${title}-scraps`}
+  description={scrap.data.description}
 >
-  <h2>{title}</h2>
-  <div class="c-scraps">
-    {scraps.map(async scrap => {
-      const {Content} = await scrap.render();
-      return (
-      <article class="c-scraps__article" data-loaded="false">
-        <div class="c-scraps__article-inner">
-          <Content />
-        </div>
-      </article>
-    )})}
-  </div>
+  <header class="c-scraps__header">
+    <div>
+      <h2>{title}</h2>
+      <p class="c-scraps__description">{scrap.data.description}</p>
+      <p class="c-scraps__meta">
+        <span>{sections.length}スクラップ</span>
+        <span>·</span>
+        <span>
+          <FormattedDate date={scrap.data.updatedDate ?? scrap.data.pubDate} />
+        </span>
+      </p>
+    </div>
+  </header>
+  {
+    sections.length > 0 ? (
+      <div class="c-scraps">
+        {sections.map((section) => (
+          <article class="c-scraps__article" data-loaded="false" id={section.id}>
+            <div class="c-scraps__article-inner">
+              <h3>{section.title}</h3>
+              <Fragment set:html={section.html} />
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p>まだメモはありません。</p>
+    )
+  }
 </Base>
-
+<style is:inline>
+  .c-scraps__article-inner h3 {
+    margin-top: 0;
+  }
+  .c-scraps__article-inner > p > code {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    margin: 0;
+    border: 1px solid color-mix(in srgb, var(--border-primary) 88%, transparent);
+    border-radius: 0.4rem;
+    background: var(--background-primary);
+    color: inherit;
+    font-size: 0.9em;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+  .c-scraps__article-inner > pre {
+    overflow-x: auto;
+    border-radius: 0.75rem;
+  }
+</style>
 <style>
+  .c-scraps__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+  .c-scraps__meta {
+    display: flex;
+    gap: 0.5rem;
+    color: var(--text-secondary, #666);
+    margin: 0;
+  }
+  .c-scraps__description {
+    margin: 0 0 0.75rem;
+    color: var(--text-secondary, #666);
+  }
   .c-scraps {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
@@ -60,14 +109,18 @@ const { scraps } = Astro.props
   }
   .c-scraps__article-inner {
     padding: 1rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 720px) {
+    .c-scraps__header {
+      flex-direction: column;
+    }
   }
 </style>
 
 <script>
-  const layout = document.querySelector('.c-scraps')!;
-  if (!layout) {
-    throw new Error('not found mansory layout');
-  }
+  const layout = document.querySelector('.c-scraps') as HTMLElement | null;
   function throttle(fn: Function, delay: number) {
     let timer: number | null = null;
     return function() {
@@ -81,23 +134,36 @@ const { scraps } = Astro.props
     }
   }
   function resize(item: Element) {
-    const gap = parseInt(window.getComputedStyle(layout).getPropertyValue('grid-row-gap'))
-    const height = parseInt(window.getComputedStyle(layout).getPropertyValue('grid-auto-rows'));
-    const span = Math.ceil((item.querySelector('.c-scraps__article-inner')!.getBoundingClientRect().height + gap) / (height + gap));
+    const currentLayout = layout;
+    if (!currentLayout) {
+      return;
+    }
+    const gap = parseInt(window.getComputedStyle(currentLayout).getPropertyValue('grid-row-gap'))
+    const height = parseInt(window.getComputedStyle(currentLayout).getPropertyValue('grid-auto-rows'));
+    const inner = item.querySelector('.c-scraps__article-inner');
+    if (!inner) {
+      return;
+    }
+    const span = Math.ceil((inner.getBoundingClientRect().height + gap) / (height + gap));
     (item as any).style.gridRowEnd  = `span ${span}`;
     (item as any).dataset.loaded = 'true';
   }
 
   function resizeAll() {
+    if (!layout) {
+      return;
+    }
     const items = document.querySelectorAll('.c-scraps__article');
     items.forEach(item => resize(item));
   }
   resizeAll();
   const throttledResizeAll = throttle(resizeAll, 100);
 
-  const resizeObserver = new ResizeObserver(_ => {
-    throttledResizeAll()
-  });
+  if (layout) {
+    const resizeObserver = new ResizeObserver(_ => {
+      throttledResizeAll()
+    });
 
-  resizeObserver.observe(layout);  
+    resizeObserver.observe(layout);
+  }
 </script>

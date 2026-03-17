@@ -1,0 +1,28 @@
+---
+title: Haskellを学ぶ
+description: 関数型言語に興味を持ったのでその代表的な言語であるHaskellを学び始めたのでそれの備忘録。
+pubDate: 'Mar 9 2026'
+---
+
+最近 Nix という、宣言的に開発環境を定義できるツールを試している。
+Nix はいわゆる、IaC 的なツールで、独自の関数型言語によって環境を定義する。正直チュートリアルレベルの利用であれば、関数型言語についてよく知らなくとも問題ないが、それだと Nix の表現力を十分に活かせない気もするし、Nix を利用する意味も薄れるので、これを機に関数型言語を学ぶことにした。  
+その中でも関数型言語の代表的？な Haskell を今回の対象とした。
+
+## 教材
+教材としては以下を見る
+- [Learn You a Haskell for Great Good! - Learn You a Haskell for Great Good!](https://learnyouahaskell.github.io/chapters.html)
+- [Haskell Basics](https://www.seas.upenn.edu/~cis1940/spring13/lectures/01-intro.html)
+
+## Playground 環境
+教材中のコードを実際に動かしてみるための環境として、以下を用意した。
+https://github.com/kyana0817/hs-playground
+
+Web 上で Haskell を試せる環境もありそうではあるが、ローカルで動かしたかったので、コンテナを使うことにした。
+
+余談だが、Dev Containers には features というものがあり、ツールを Opt in で入れられるようになっているが、筆者が利用している podman の環境では権限の問題で利用できなかったので諦めた。
+
+## スクラップ
+以下は学習中に気になった部分や、後で調べるようのスクラップ。  
+随時追加してそのうち記事するかもしれない。
+
+[Haskellを学んでいる時のあれこれ](/scrap/haskellを学んでいる時のあれこれ/)

@@ -59,6 +59,14 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
+## scrap の書き方
+
+`src/content/scrap/`配下では、1テーマを1ファイル（`.md` / `.mdx`）で管理します。
+
+- frontmatterには`title`と`pubDate`を書く
+- 本文中の`#` / `##`見出しごとに、scrapページではカードとして分割表示されます
+- 1ファイルの中に雑に追記していくだけで、一覧性とmasonry表示を両立できます
+
 ## 👀 Want to learn more?
 
 Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

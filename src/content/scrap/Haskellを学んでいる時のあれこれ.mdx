@@ -1,0 +1,67 @@
+---
+title: Haskellを学んでいる時のあれこれ
+description: Haskellを学んだときのあれこれの雑書きと後で調べるようのメモ
+pubDate: 'Mar 9 2026'
+updatedDate: 'Mar 9 2026'
+---
+
+## 対話モードで複数行入力する方法
+
+```haskell
+ghci> :{
+ghci| lucky :: (Integral a) => a -> String
+ghci| lucky 7 = "LUCKY NUMBER SEVEN!"
+ghci| lucky x = "Sorry, you're out of luck, pal!"
+ghci| :}
+ghci> lucky 7
+"LUCKY NUMBER SEVEN!"
+ghci> lucky 8
+"Sorry, you're out of luck, pal!"
+```
+
+## ガード節のその他
+haskell では、Rust と違って網羅する必要がなく、その他は `otherwise` でまとめられる
+Rust でいう `_` のようなもの
+
+```haskell
+bmiTell :: (RealFloat a) => a -> String
+bmiTell bmi
+  | bmi <= 18.5 = "You're underweight, you emo, you!"
+  | bmi <= 25.0 = "You're supposedly normal. Pffft, I bet you're ugly!"
+  | bmi <= 30.0 = "You're fat! Lose some weight, fatty!"
+  | otherwise   = "You're a whale, congratulations!"
+```
+
+## BindingとAssignment
+Notebook LMに、  
+[4 Declarations and Bindings](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html)
+を元に掲題についての回答
+- 宣言の順序が不問
+- 数学的な等価性
+- パターンマッチングとの統合
+- 多相性（ポリモーフィズム）の付与
+- 単態性制限 (Monomorphism Restriction)
+
+んーよくわからん
+
+## Where と Let の違い
+- Where
+```haskell
+cylinder :: (RealFloat a) => a -> a -> a
+cylinder r h = sideArea + 2 * topArea
+    where sideArea = 2 * pi * r * h
+          topArea = pi * r^2
+```
+- Let
+```haskell
+cylinder :: (RealFloat a) => a -> a -> a  
+cylinder r h = 
+    let sideArea = 2 * pi * r * h  
+        topArea = pi * r ^2  
+    in  sideArea + 2 * topArea  
+```
+
+## Hindley-Milner
+
+## 参照透過性
+
