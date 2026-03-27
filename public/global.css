@@ -145,14 +145,18 @@ section {
 table {
   border-collapse: collapse;
   width: 100%;
-  border: 1px solid var(--border-secondary);
+  /* border-bottom: 1px solid var(--border-secondary); */
 }
 
 th {
   text-align: left;
 }
 
-tr:nth-child(even) {
+/* tr:nth-child(odd) {
+  background-color: var(--background-secondary);
+} */
+
+tr:first-child {
   background-color: var(--background-secondary);
 }
 
@@ -166,7 +170,7 @@ tr>td:nth-child(3) {
 
 th,
 td {
-  border: 1px solid var(--border-secondary);
+  border-bottom: 1px solid var(--border-secondary);
   padding: 0.4rem 1rem;
 }
 
