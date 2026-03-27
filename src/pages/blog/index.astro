@@ -9,31 +9,35 @@ const posts = (await getCollection('blog')).sort(
 ---
 
 <Base
-	title="記事"
-	description="記事一覧"
+  title="記事"
+  description="記事一覧"
 >
-	<section>
-		<table>
-			<tr>
-				<th>タイトル</th>
-				<th>説明</th>
-				<th>公開日</th>
-			</tr>
-			{
-				posts.map((post) => (
-					<tr>
-						<td>
-							<a href={`/blog/${post.slug}/`}>{post.data.title}</a>
-						</td>
-						<td>
-							<a href={`/blog/${post.slug}/`}>{post.data.description}</a>									
-						</td>
-						<td>
-							<FormattedDate date={post.data.pubDate} />
-						</td>
-					</tr>
-				))
-			}
-		</table>
-	</section>
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <th>タイトル</th>
+          <th>説明</th>
+          <th>公開日</th>
+        </tr>
+      </thead>
+      <tbody>
+      {
+        posts.map((post) => (
+          <tr>
+            <td>
+              <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+            </td>
+            <td>
+              <a href={`/blog/${post.slug}/`}>{post.data.description}</a>                  
+            </td>
+            <td>
+              <FormattedDate date={post.data.pubDate} />
+            </td>
+          </tr>
+        ))
+      }
+      </tbody>
+    </table>
+  </section>
 </Base>

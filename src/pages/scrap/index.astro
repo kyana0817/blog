@@ -4,50 +4,54 @@ import FormattedDate from '../../components/FormattedDate.astro'
 import { getScrapEntries, getScrapSections } from '../../utils/scrap'
 
 const scraps = await Promise.all(
-	(await getScrapEntries()).map(async (entry) => ({
-		slug: entry.slug,
-		title: entry.data.title,
-		description: entry.data.description,
-		updatedAt: entry.data.updatedDate ?? entry.data.pubDate,
-		sectionCount: (await getScrapSections(entry)).length,
-	})),
+  (await getScrapEntries()).map(async (entry) => ({
+    slug: entry.slug,
+    title: entry.data.title,
+    description: entry.data.description,
+    updatedAt: entry.data.updatedDate ?? entry.data.pubDate,
+    sectionCount: (await getScrapSections(entry)).length,
+  })),
 )
 ---
 
 <Base
-	title="スクラップ"
-	description="スクラップ一覧"
+  title="スクラップ"
+  description="スクラップ一覧"
 >
-	<section>
-		{
-			scraps.length > 0 ? (
-				<table>
-					<tr>
-						<th>名前</th>
-						<th>説明</th>
-						<th>スクラップ数</th>
-						<th>最終更新日</th>
-					</tr>
-					{
-						scraps.map((scrap) => (
-							<tr>
-								<td>
-									<a href={`/scrap/${scrap.slug}/`}>{scrap.title}</a>
-								</td>
-								<td>{scrap.description}</td>
-								<td>
-									<a href={`/scrap/${scrap.slug}/`}>{scrap.sectionCount}</a>
-								</td>
-								<td>
-									<FormattedDate date={scrap.updatedAt} />
-								</td>
-							</tr>
-						))
-					}
-				</table>
-			) : (
-				<p>まだスクラップはありません。</p>
-			)
-		}
-	</section>
+  <section>
+    {
+      scraps.length > 0 ? (
+        <table>
+          <thead>
+            <tr>
+              <th>名前</th>
+              <th>説明</th>
+              <th>スクラップ数</th>
+              <th>最終更新日</th>
+            </tr>
+          </thead>
+          <tbody>
+          {
+            scraps.map((scrap) => (
+              <tr>
+                <td>
+                  <a href={`/scrap/${scrap.slug}/`}>{scrap.title}</a>
+                </td>
+                <td>{scrap.description}</td>
+                <td>
+                  <a href={`/scrap/${scrap.slug}/`}>{scrap.sectionCount}</a>
+                </td>
+                <td>
+                  <FormattedDate date={scrap.updatedAt} />
+                </td>
+              </tr>
+            ))
+          }
+          </tbody>
+        </table>
+      ) : (
+        <p>まだスクラップはありません。</p>
+      )
+    }
+  </section>
 </Base>

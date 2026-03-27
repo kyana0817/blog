@@ -145,38 +145,28 @@ section {
 table {
   border-collapse: collapse;
   width: 100%;
-  /* border-bottom: 1px solid var(--border-secondary); */
+  display: block;
+  overflow-x: auto;
 }
+
 
 th {
   text-align: left;
 }
 
-/* tr:nth-child(odd) {
+thead {
   background-color: var(--background-secondary);
-} */
-
-tr:first-child {
-  background-color: var(--background-secondary);
+  white-space: nowrap;
 }
 
-tr:not(:first-child):hover {
+tbody>tr:hover {
   background-color: var(--background-hover);
-}
-
-tr>td:nth-child(3) {
-  width: 120px;
 }
 
 th,
 td {
   border-bottom: 1px solid var(--border-secondary);
   padding: 0.4rem 1rem;
-}
-
-
-*:has(>table) {
-  overflow-x: auto;
 }
 
 table a {
