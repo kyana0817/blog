@@ -25,30 +25,33 @@ const sections = await getScrapSections(scrap)
   title={title}
   description={scrap.data.description}
 >
-  <header class="c-scraps__header">
-    <div>
-      <h2>{title}</h2>
-      <p class="c-scraps__description">{scrap.data.description}</p>
-      <p class="c-scraps__meta">
-        <span>{sections.length}スクラップ</span>
-        <span>·</span>
-        <span>
-          <FormattedDate date={scrap.data.updatedDate ?? scrap.data.pubDate} />
-        </span>
-      </p>
-    </div>
+  <header class="c-scrap__header">
+    <p class="c-scrap__label">scrap</p>
+    <h1>{title}</h1>
+    <p class="c-scrap__description">{scrap.data.description}</p>
+    <p class="c-scrap__meta">
+      <span>{sections.length}項目</span>
+      <span>·</span>
+      <span>
+        <FormattedDate date={scrap.data.updatedDate ?? scrap.data.pubDate} />
+      </span>
+    </p>
   </header>
   {
     sections.length > 0 ? (
-      <div class="c-scraps">
-        {sections.map((section) => (
-          <article class="c-scraps__article" data-loaded="false" id={section.id}>
-            <div class="c-scraps__article-inner">
-              <h3>{section.title}</h3>
-              <Fragment set:html={section.html} />
-            </div>
-          </article>
-        ))}
+      <div class="c-scrap__content">
+        {
+          sections.map((section) => (
+            <article class="c-scrap__section" id={section.id}>
+              <h2 class="c-scrap__section-title">
+                <a href={`#${section.id}`}>{section.title}</a>
+              </h2>
+              <div class="c-scrap__section-body">
+                <Fragment set:html={section.html} />
+              </div>
+            </article>
+          ))
+        }
       </div>
     ) : (
       <p>まだメモはありません。</p>
@@ -56,10 +59,20 @@ const sections = await getScrapSections(scrap)
   }
 </Base>
 <style is:inline>
-  .c-scraps__article-inner h3 {
+  .c-scrap__section-body > * + * {
+    margin-top: 1.2rem;
+  }
+
+  .c-scrap__section-body > :first-child {
     margin-top: 0;
   }
-  .c-scraps__article-inner > p > code {
+
+  .c-scrap__section-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  .c-scrap__section-body > p > code,
+  .c-scrap__section-body li > code {
     display: inline-block;
     padding: 0.15rem 0.45rem;
     margin: 0;
@@ -71,99 +84,92 @@ const sections = await getScrapSections(scrap)
     line-height: 1.2;
     word-break: break-word;
   }
-  .c-scraps__article-inner > pre {
+
+  .c-scrap__section-body > pre {
+    max-width: 100%;
+    width: 100%;
     overflow-x: auto;
+    box-sizing: border-box;
     border-radius: 0.75rem;
+  }
+
+  .c-scrap__section-body ul,
+  .c-scrap__section-body ol {
+    padding-left: 1.5em;
+  }
+
+  .c-scrap__section-body blockquote {
+    margin: 0;
+    padding-left: 1rem;
+    border-left: 3px solid var(--border-secondary);
+    color: var(--text-secondary, #9aa6b2);
   }
 </style>
 <style>
-  .c-scraps__header {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    align-items: flex-start;
+  .c-scrap__header {
+    margin-bottom: 2rem;
   }
-  .c-scraps__meta {
+
+  .c-scrap__label {
+    margin-bottom: 0.5rem;
+    color: var(--text-hyperlink);
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .c-scrap__description {
+    margin: 0 0 0.75rem;
+    color: var(--text-secondary, #666);
+  }
+
+  .c-scrap__meta {
     display: flex;
     gap: 0.5rem;
     color: var(--text-secondary, #666);
     margin: 0;
   }
-  .c-scraps__description {
-    margin: 0 0 0.75rem;
-    color: var(--text-secondary, #666);
-  }
-  .c-scraps {
+
+  .c-scrap__content {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(24rem,1fr));
-    grid-auto-rows: 0;
-    gap: 1rem;
+    gap: 1.25rem;
+    min-width: 0;
   }
-  .c-scraps__article {
-    border: 2px solid var(--border-primary);
-    background: var(--background-secondary);
-  }
-  .c-scraps__article[data-loaded="false"] {
-    opacity: 0;
-  }
-  .c-scraps__article-inner {
-    padding: 1rem;
+
+  .c-scrap__section {
     line-height: 1.7;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border-secondary);
+    border-left: 4px solid var(--text-hyperlink);
+    background-color: var(--background-secondary);
+    min-width: 0;
+  }
+
+  .c-scrap__section-body {
+    min-width: 0;
+  }
+
+  .c-scrap__section-title {
+    margin: 0 0 0.75rem;
+  }
+
+  .c-scrap__section-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .c-scrap__section-title a:hover {
+    text-decoration: underline;
   }
 
   @media (max-width: 720px) {
-    .c-scraps__header {
-      flex-direction: column;
+    .c-scrap__meta {
+      flex-wrap: wrap;
+    }
+
+    .c-scrap__section {
+      padding: 1rem;
     }
   }
 </style>
-
-<script>
-  const layout = document.querySelector('.c-scraps') as HTMLElement | null;
-  function throttle(fn: Function, delay: number) {
-    let timer: number | null = null;
-    return function() {
-      if (timer) {
-        return;
-      }
-      timer = setTimeout(() => {
-        fn();
-        timer = null;
-      }, delay) as unknown as number;
-    }
-  }
-  function resize(item: Element) {
-    const currentLayout = layout;
-    if (!currentLayout) {
-      return;
-    }
-    const gap = parseInt(window.getComputedStyle(currentLayout).getPropertyValue('grid-row-gap'))
-    const height = parseInt(window.getComputedStyle(currentLayout).getPropertyValue('grid-auto-rows'));
-    const inner = item.querySelector('.c-scraps__article-inner');
-    if (!inner) {
-      return;
-    }
-    const span = Math.ceil((inner.getBoundingClientRect().height + gap) / (height + gap));
-    (item as any).style.gridRowEnd  = `span ${span}`;
-    (item as any).dataset.loaded = 'true';
-  }
-
-  function resizeAll() {
-    if (!layout) {
-      return;
-    }
-    const items = document.querySelectorAll('.c-scraps__article');
-    items.forEach(item => resize(item));
-  }
-  resizeAll();
-  const throttledResizeAll = throttle(resizeAll, 100);
-
-  if (layout) {
-    const resizeObserver = new ResizeObserver(_ => {
-      throttledResizeAll()
-    });
-
-    resizeObserver.observe(layout);
-  }
-</script>
