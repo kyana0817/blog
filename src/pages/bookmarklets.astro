@@ -18,10 +18,13 @@ const { isError, bookmarklets } = (await (
       <p>ブックマークレットの取得に失敗しました。</p>
     ) : (
     <table>
-      <tr>
-        <th>スクリプト</th>
-        <th>説明</th>
-      </tr>
+      <thead>
+        <tr>
+          <th>スクリプト</th>
+          <th>説明</th>
+        </tr>
+      </thead>
+      <tbody>
       {bookmarklets.map((bookmarklet) => (
         <tr>
           <td>
@@ -34,6 +37,7 @@ const { isError, bookmarklets } = (await (
           </td>
         </tr>
       ))}
+      </tbody>
     </table>
     )}
   </section>
