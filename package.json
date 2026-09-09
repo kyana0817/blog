@@ -16,7 +16,7 @@
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.7.0",
     "@biomejs/biome": "^1.9.4",
-    "astro": "^6.1.6",
+    "astro": "^7.2.8",
     "astro-expressive-code": "^0.36.1",
     "highlight.js": "^11.11.1",
     "marked": "^17.0.4",
